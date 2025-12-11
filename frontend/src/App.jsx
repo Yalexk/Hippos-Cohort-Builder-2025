@@ -192,7 +192,10 @@ function App() {
 
   return (
     <div className="app">
-      <h1>Hip Fracture Cohort Builder</h1>
+      <div className="app-header">
+        <h1>Hip Fracture Cohort Builder</h1>
+        <a href="/cohorts" className="view-cohorts-link">View Saved Cohorts →</a>
+      </div>
       
       <div className="sections-grid">
         {/* 1. DEMOGRAPHICS */}
