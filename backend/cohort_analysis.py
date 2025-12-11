@@ -2,11 +2,13 @@ import pandas as pd
 from mortality_analysis import compute_mortality, generate_mortality_chart
 from residence_analysis import compute_residence, generate_residence_chart
 from fwalk2_analysis import compute_fwalk2, generate_fwalk2_chart
+from afracture_analysis import compute_afracture, generate_afracture_chart
 
 # EXPANDABLE CONFIGURATION
 CHART_BLOCKING_RULES = {
     'residence_chart': ['uresidence'],
     'fwalk2_chart': ['fwalk2'],
+    'afracture_chart': ['afracture'], # Hide chart if user filters by specific fracture type
 }
 
 def should_generate_chart(chart_key, applied_filters):
@@ -48,7 +50,7 @@ def analyse_cohort(cohort_id, cohort_csv_path, filters=None):
         else:
             results['mortality_chart'] = None
 
-        # 2. Walking Ability (120 Days) Analysis - NEW
+        # 2. Walking Ability (120 Days) Analysis
         fwalk2_stats = compute_fwalk2(df)
         results['fwalk2'] = fwalk2_stats
 
@@ -56,8 +58,17 @@ def analyse_cohort(cohort_id, cohort_csv_path, filters=None):
             results['fwalk2_chart'] = generate_fwalk2_chart(fwalk2_stats)
         else:
             results['fwalk2_chart'] = None
+            
+        # 3. Fracture Type Analysis - NEW
+        afracture_stats = compute_afracture(df)
+        results['afracture'] = afracture_stats
+        
+        if should_generate_chart('afracture_chart', filters):
+            results['afracture_chart'] = generate_afracture_chart(afracture_stats)
+        else:
+            results['afracture_chart'] = None
 
-        # 3. Residence Analysis
+        # 4. Residence Analysis
         residence_stats = compute_residence(df)
         results['residence'] = residence_stats
         

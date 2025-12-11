@@ -47,7 +47,8 @@ function Cohorts() {
         id: cohortId, 
         name: cohortName, 
         mortalityImg: response.data.mortality_chart,
-        fwalk2Img: response.data.fwalk2_chart, // Added new chart
+        fwalk2Img: response.data.fwalk2_chart, 
+        afractureImg: response.data.afracture_chart, // Added new chart
         residenceImg: response.data.residence_chart
       })
       
@@ -146,14 +147,21 @@ function Cohorts() {
                 </div>
               )}
 
-              {/* 2. Walking Ability Chart (New) - Placed below mortality, above residence */}
+              {/* 2. Walking Ability Chart */}
               {selectedAnalysis.fwalk2Img && (
                 <div className="analysis-chart">
                   <img src={selectedAnalysis.fwalk2Img} alt={`Walking Ability Analysis for ${selectedAnalysis.name}`} />
                 </div>
               )}
 
-              {/* 3. Residence Chart */}
+              {/* 3. Atypical Fracture Chart - NEW */}
+              {selectedAnalysis.afractureImg && (
+                <div className="analysis-chart">
+                  <img src={selectedAnalysis.afractureImg} alt={`Fracture Type Analysis for ${selectedAnalysis.name}`} />
+                </div>
+              )}
+
+              {/* 4. Residence Chart */}
               {selectedAnalysis.residenceImg && (
                 <div className="analysis-chart">
                   <img src={selectedAnalysis.residenceImg} alt={`Residence Analysis for ${selectedAnalysis.name}`} />

@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import base64
 from io import BytesIO
 
-
 def compute_mortality(df: pd.DataFrame):
     """
     Compute mortality counts/rates for timeframes present in the dataset.
