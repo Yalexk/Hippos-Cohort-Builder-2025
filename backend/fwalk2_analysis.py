@@ -85,9 +85,10 @@ def generate_fwalk2_chart(stats: dict):
     # Define colors
     colors = ['#50c878', '#4a90e2', '#f5a623', '#e24a4a']
     
-    wedges, texts = ax.pie(
+    wedges, texts, autotexts = ax.pie(
         sizes, 
         labels=None,
+        autopct='%1.1f%%',
         startangle=90,
         colors=colors[:len(sizes)],
         textprops=dict(color="black")
