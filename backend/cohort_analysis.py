@@ -29,6 +29,63 @@ def should_generate_chart(chart_key, applied_filters):
             
     return True
 
+def compute_enhanced_metrics(df, mortality_stats):
+    """
+    Compute enhanced metrics for research adequacy assessment.
+    Returns metrics including:
+    - Number of hospitals
+    - Date range
+    """
+    import numpy as np
+    from datetime import datetime
+    
+    metrics = {}
+    
+    # Number of Hospitals
+    if 'ahos_code' in df.columns:
+        unique_hospitals = df['ahos_code'].dropna().nunique()
+        metrics['n_hospitals'] = int(unique_hospitals)
+    else:
+        metrics['n_hospitals'] = 0
+    
+    # Date Range
+    # Try to find admission date column
+    date_col = None
+    for col in ['arrdatetime_dt', 'admdatetimeop_dt', 'tarrdatetime_dt']:
+        if col in df.columns:
+            date_col = col
+            break
+    
+    if date_col:
+        # Convert to datetime if not already
+        dates = pd.to_datetime(df[date_col], errors='coerce').dropna()
+        
+        if len(dates) > 0:
+            earliest = dates.min()
+            latest = dates.max()
+            
+            metrics['earliest_admission'] = earliest.strftime('%Y-%m-%d')
+            metrics['latest_admission'] = latest.strftime('%Y-%m-%d')
+            
+            # Calculate time span in years
+            time_span_days = (latest - earliest).days
+            time_span_years = round(time_span_days / 365.25, 1)
+            metrics['time_span_years'] = time_span_years
+            
+            metrics['date_range'] = f"{earliest.strftime('%b %Y')} - {latest.strftime('%b %Y')}"
+        else:
+            metrics['earliest_admission'] = 'Unknown'
+            metrics['latest_admission'] = 'Unknown'
+            metrics['time_span_years'] = 0
+            metrics['date_range'] = 'Unknown'
+    else:
+        metrics['earliest_admission'] = 'Unknown'
+        metrics['latest_admission'] = 'Unknown'
+        metrics['time_span_years'] = 0
+        metrics['date_range'] = 'Unknown'
+    
+    return metrics
+
 def analyse_cohort(cohort_id, cohort_csv_path, filters=None):
     """
     Analyse a cohort and return statistics. Delegates computation and
@@ -90,6 +147,9 @@ def analyse_cohort(cohort_id, cohort_csv_path, filters=None):
         # Add total patients to top level
         if 'total_patients' in mortality_stats:
             results['total_patients'] = mortality_stats['total_patients']
+
+        # Add enhanced metrics for research adequacy assessment
+        results['enhanced_metrics'] = compute_enhanced_metrics(df, mortality_stats)
 
         return results
     except Exception as e:

@@ -1,7 +1,53 @@
 {
-  "cohort_1_20251212100405": {
-    "id": "cohort_1_20251212100405",
-    "name": "test",
+  "cohort_2_20251212102701": {
+    "id": "cohort_2_20251212102701",
+    "name": "asdfdas",
+    "filters": {
+      "minAge": "",
+      "maxAge": "",
+      "sex": [],
+      "ptype": [],
+      "uresidence": [],
+      "walk": [],
+      "cogstat": [],
+      "frailty": [],
+      "addelassess": [],
+      "ftype": [],
+      "afracture": [],
+      "asa": [],
+      "e_dadmit": [
+        "Yes"
+      ],
+      "painassess": [],
+      "painmanage": [],
+      "analges": [],
+      "surg": [],
+      "delay": [],
+      "anaesth": [],
+      "wbear": [],
+      "ward": [],
+      "gerimed": [],
+      "delassess": [],
+      "fassess": [],
+      "pulcers": [],
+      "mobil": [],
+      "bonemed": [],
+      "dbonemed1": [],
+      "malnutrition": [],
+      "ons": [],
+      "wdest": [],
+      "fwalk2": [],
+      "dresidence": [],
+      "fbonemed2": [],
+      "fop2": []
+    },
+    "count": 80873,
+    "csv_path": "data/cohorts/cohort_2_20251212102701.csv",
+    "created_at": "2025-12-12T10:27:03.852323"
+  },
+  "cohort_2_20251212102831": {
+    "id": "cohort_2_20251212102831",
+    "name": "asdf",
     "filters": {
       "minAge": "",
       "maxAge": "",
@@ -32,15 +78,17 @@
       "bonemed": [],
       "dbonemed1": [],
       "malnutrition": [],
-      "ons": [],
+      "ons": [
+        "Yes"
+      ],
       "wdest": [],
       "fwalk2": [],
       "dresidence": [],
       "fbonemed2": [],
       "fop2": []
     },
-    "count": 97429,
-    "csv_path": "data/cohorts\\cohort_1_20251212100405.csv",
-    "created_at": "2025-12-12T10:04:12.008900"
+    "count": 8595,
+    "csv_path": "data/cohorts/cohort_2_20251212102831.csv",
+    "created_at": "2025-12-12T10:28:32.116476"
   }
 }
