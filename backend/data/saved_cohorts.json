@@ -93,12 +93,12 @@
     "csv_path": "data/cohorts/cohort_2_20251211154616.csv",
     "created_at": "2025-12-11T15:46:17.026614"
   },
-  "cohort_3_20251211154645": {
-    "id": "cohort_3_20251211154645",
-    "name": "0",
+  "cohort_4_20251211160449": {
+    "id": "cohort_4_20251211160449",
+    "name": "over 80",
     "filters": {
-      "minAge": "",
-      "maxAge": "1",
+      "minAge": "79",
+      "maxAge": "",
       "sex": [],
       "ptype": [],
       "uresidence": [],
@@ -133,8 +133,54 @@
       "fbonemed2": [],
       "fop2": []
     },
-    "count": 0,
-    "csv_path": "data/cohorts/cohort_3_20251211154645.csv",
-    "created_at": "2025-12-11T15:46:45.942055"
+    "count": 65733,
+    "csv_path": "data/cohorts/cohort_4_20251211160449.csv",
+    "created_at": "2025-12-11T16:04:50.921637"
+  },
+  "cohort_5_20251211162349": {
+    "id": "cohort_5_20251211162349",
+    "name": "males",
+    "filters": {
+      "minAge": "",
+      "maxAge": "",
+      "sex": [
+        "Male"
+      ],
+      "ptype": [],
+      "uresidence": [],
+      "walk": [],
+      "cogstat": [],
+      "frailty": [],
+      "addelassess": [],
+      "ftype": [],
+      "afracture": [],
+      "asa": [],
+      "e_dadmit": [],
+      "painassess": [],
+      "painmanage": [],
+      "analges": [],
+      "surg": [],
+      "delay": [],
+      "anaesth": [],
+      "wbear": [],
+      "ward": [],
+      "gerimed": [],
+      "delassess": [],
+      "fassess": [],
+      "pulcers": [],
+      "mobil": [],
+      "bonemed": [],
+      "dbonemed1": [],
+      "malnutrition": [],
+      "ons": [],
+      "wdest": [],
+      "fwalk2": [],
+      "dresidence": [],
+      "fbonemed2": [],
+      "fop2": []
+    },
+    "count": 32818,
+    "csv_path": "data/cohorts/cohort_5_20251211162349.csv",
+    "created_at": "2025-12-11T16:23:50.749969"
   }
 }

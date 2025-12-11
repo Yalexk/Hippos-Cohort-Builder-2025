@@ -4,6 +4,7 @@ import pandas as pd
 import os
 import json
 from datetime import datetime
+# Import local module when running as a script from the backend directory
 from cohort_analysis import analyse_cohort
 
 app = Flask(__name__)
