@@ -40,9 +40,19 @@ def build_cohort():
             max_age = float(filters['maxAge'])
             filtered_df = filtered_df[filtered_df['age'] <= max_age]
         
-        # Apply sex filter
-        if filters.get('sex') and filters['sex'] != '':
-            filtered_df = filtered_df[filtered_df['sex'] == filters['sex']]
+        # Apply categorical filters - iterate through all possible filter fields
+        categorical_filters = [
+            'sex', 'ptype', 'uresidence', 'walk', 'cogstat', 'frailty', 
+            'addelassess', 'ftype', 'afracture', 'asa', 'e_dadmit', 
+            'painassess', 'painmanage', 'analges', 'surg', 'delay', 
+            'anaesth', 'wbear', 'ward', 'gerimed', 'delassess', 'fassess',
+            'pulcers', 'mobil', 'bonemed', 'dbonemed1', 'malnutrition', 
+            'ons', 'wdest', 'fwalk2', 'dresidence', 'fbonemed2', 'fop2'
+        ]
+        
+        for filter_key in categorical_filters:
+            if filters.get(filter_key) and filters[filter_key] != '' and filter_key in filtered_df.columns:
+                filtered_df = filtered_df[filtered_df[filter_key] == filters[filter_key]]
         
         count = len(filtered_df)
         print(f"Cohort size: {count}")
@@ -54,6 +64,8 @@ def build_cohort():
     
     except Exception as e:
         print(f"Error: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
