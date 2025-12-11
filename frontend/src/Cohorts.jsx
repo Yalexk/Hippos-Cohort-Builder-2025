@@ -5,7 +5,7 @@ import axios from "axios"
 function Cohorts() {
   const [savedCohorts, setSavedCohorts] = useState([])
   const [loading, setLoading] = useState(true)
-  const [selectedAnalysis, setSelectedAnalysis] = useState(null) // {id, name, img}
+  const [selectedAnalysis, setSelectedAnalysis] = useState(null) 
 
   useEffect(() => {
     loadSavedCohorts()
@@ -41,28 +41,20 @@ function Cohorts() {
     try {
       const response = await axios.post(`http://localhost:5050/api/cohorts/${cohortId}/analyse`)
       console.log('Analysis results:', response.data)
-      // Show only the selected cohort's image in the right sidebar
-      if (response.data.mortality_chart) {
-        setSelectedAnalysis({ id: cohortId, name: cohortName, img: response.data.mortality_chart })
-      } else {
-        setSelectedAnalysis(null)
-      }
+      
+      // Store all analysis charts in state
+      setSelectedAnalysis({ 
+        id: cohortId, 
+        name: cohortName, 
+        mortalityImg: response.data.mortality_chart,
+        fwalk2Img: response.data.fwalk2_chart, // Added new chart
+        residenceImg: response.data.residence_chart
+      })
       
     } catch (err) {
       console.error('Error analysing cohort:', err)
       alert('Failed to analyse cohort')
     }
-  }
-
-  const formatDate = (isoString) => {
-    const date = new Date(isoString)
-    return date.toLocaleDateString('en-AU', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
   }
 
   const getActiveFiltersCount = (filters) => {
@@ -128,7 +120,7 @@ function Cohorts() {
           </div>
         </aside>
         <div className="analysis-panel">
-          <div className="analysis-panel-header">Analysis</div>
+          <div className="analysis-panel-header">Prediction Analysis</div>
           {!selectedAnalysis ? (
             <div className="analysis-empty">Select a cohort to analyse</div>
           ) : (
@@ -146,9 +138,27 @@ function Cohorts() {
                   </div>
                 </div>
               </div>
-              <div className="analysis-chart">
-                <img src={selectedAnalysis.img} alt={`Analysis for ${selectedAnalysis.name}`} />
-              </div>
+              
+              {/* 1. Mortality Chart */}
+              {selectedAnalysis.mortalityImg && (
+                <div className="analysis-chart">
+                  <img src={selectedAnalysis.mortalityImg} alt={`Mortality Analysis for ${selectedAnalysis.name}`} />
+                </div>
+              )}
+
+              {/* 2. Walking Ability Chart (New) - Placed below mortality, above residence */}
+              {selectedAnalysis.fwalk2Img && (
+                <div className="analysis-chart">
+                  <img src={selectedAnalysis.fwalk2Img} alt={`Walking Ability Analysis for ${selectedAnalysis.name}`} />
+                </div>
+              )}
+
+              {/* 3. Residence Chart */}
+              {selectedAnalysis.residenceImg && (
+                <div className="analysis-chart">
+                  <img src={selectedAnalysis.residenceImg} alt={`Residence Analysis for ${selectedAnalysis.name}`} />
+                </div>
+              )}
             </div>
           )}
         </div>

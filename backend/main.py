@@ -200,12 +200,14 @@ def analyse_cohort_endpoint(cohort_id):
         
         cohort = saved_cohorts[cohort_id]
         csv_path = cohort.get('csv_path')
+        # RETRIEVE FILTERS
+        cohort_filters = cohort.get('filters', {}) 
         
         if not csv_path or not os.path.exists(csv_path):
             return jsonify({"error": "Cohort data file not found"}), 404
         
-        # Run analysis
-        analysis_results = analyse_cohort(cohort_id, csv_path)
+        # PASS FILTERS TO ANALYSIS
+        analysis_results = analyse_cohort(cohort_id, csv_path, cohort_filters)
         
         # Add cohort metadata
         analysis_results['cohort_name'] = cohort['name']
