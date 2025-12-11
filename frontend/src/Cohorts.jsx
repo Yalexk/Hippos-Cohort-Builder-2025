@@ -48,8 +48,9 @@ function Cohorts() {
         name: cohortName, 
         mortalityImg: response.data.mortality_chart,
         fwalk2Img: response.data.fwalk2_chart, 
-        afractureImg: response.data.afracture_chart, // Added new chart
-        residenceImg: response.data.residence_chart
+        afractureImg: response.data.afracture_chart,
+        residenceImg: response.data.residence_chart,
+        residenceTransitionImg: response.data.residence_transition_chart
       })
       
     } catch (err) {
@@ -121,7 +122,7 @@ function Cohorts() {
           </div>
         </aside>
         <div className="analysis-panel">
-          <div className="analysis-panel-header">Prediction Analysis</div>
+          <div className="analysis-panel-header">Cohort Outcomes and Information Dashboard</div>
           {!selectedAnalysis ? (
             <div className="analysis-empty">Select a cohort to analyse</div>
           ) : (
@@ -164,7 +165,14 @@ function Cohorts() {
               {/* 4. Residence Chart */}
               {selectedAnalysis.residenceImg && (
                 <div className="analysis-chart">
-                  <img src={selectedAnalysis.residenceImg} alt={`Residence Analysis for ${selectedAnalysis.name}`} />
+                  <img src={selectedAnalysis.residenceImg} alt={`Pre-Admission Residence Analysis for ${selectedAnalysis.name}`} />
+                </div>
+              )}
+
+              {/* 5. Residence Transition Chart */}
+              {selectedAnalysis.residenceTransitionImg && (
+                <div className="analysis-chart">
+                  <img src={selectedAnalysis.residenceTransitionImg} alt={`Residence Transition Analysis for ${selectedAnalysis.name}`} />
                 </div>
               )}
             </div>

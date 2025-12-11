@@ -1,6 +1,7 @@
 import pandas as pd
 from mortality_analysis import compute_mortality, generate_mortality_chart
 from residence_analysis import compute_residence, generate_residence_chart
+from residence_transition_analysis import compute_residence_transition, generate_residence_transition_chart
 from fwalk2_analysis import compute_fwalk2, generate_fwalk2_chart
 from afracture_analysis import compute_afracture, generate_afracture_chart
 
@@ -76,6 +77,15 @@ def analyse_cohort(cohort_id, cohort_csv_path, filters=None):
             results['residence_chart'] = generate_residence_chart(residence_stats)
         else:
             results['residence_chart'] = None
+
+        # 5. Residence Transition Analysis
+        residence_transition_stats = compute_residence_transition(df)
+        results['residence_transition'] = residence_transition_stats
+        
+        if should_generate_chart('residence_transition_chart', filters):
+            results['residence_transition_chart'] = generate_residence_transition_chart(residence_transition_stats)
+        else:
+            results['residence_transition_chart'] = None
 
         # Add total patients to top level
         if 'total_patients' in mortality_stats:

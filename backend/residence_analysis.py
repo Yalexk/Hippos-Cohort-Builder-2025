@@ -7,7 +7,7 @@ from io import BytesIO
 
 def compute_residence(df: pd.DataFrame):
     """
-    Compute counts for residence status.
+    Compute counts for pre-admission residence status (uresidence).
     Merges 'Not recorded' into 'Other'.
     Returns a dictionary of counts.
     """
@@ -66,22 +66,27 @@ def generate_residence_chart(stats: dict):
     # Define colors (Safe pastel palette)
     colors = ['#4a90e2', '#50c878', '#e24a4a', '#f5a623']
     
-    wedges, texts, autotexts = ax.pie(
+    wedges, texts = ax.pie(
         sizes, 
-        labels=display_labels, 
-        autopct='%1.1f%%',
+        labels=None,
         startangle=90,
         colors=colors[:len(sizes)],
         textprops=dict(color="black")
     )
     
-    plt.setp(texts, size=10, weight="bold")
-    plt.setp(autotexts, size=9, weight="bold", color="white")
+    ax.set_title('Pre-Admission Residence Status', fontsize=13, fontweight='bold', pad=20)
     
-    ax.set_title('Residence Status Distribution', fontsize=13, fontweight='bold', pad=20)
+    ax.axis('equal')
     
-    # Equal aspect ratio ensures that pie is drawn as a circle
-    ax.axis('equal')  
+    # Add legend on the right
+    ax.legend(
+        wedges,
+        display_labels,
+        title="Residence Type",
+        loc="center left",
+        bbox_to_anchor=(1, 0.5),
+        fontsize=10
+    )  
 
     plt.tight_layout()
     buf = BytesIO()
