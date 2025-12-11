@@ -85,21 +85,27 @@ def generate_fwalk2_chart(stats: dict):
     # Define colors
     colors = ['#50c878', '#4a90e2', '#f5a623', '#e24a4a']
     
-    wedges, texts, autotexts = ax.pie(
+    wedges, texts = ax.pie(
         sizes, 
-        labels=display_labels, 
-        autopct='%1.1f%%',
+        labels=None,
         startangle=90,
         colors=colors[:len(sizes)],
         textprops=dict(color="black")
     )
     
-    plt.setp(texts, size=10, weight="bold")
-    plt.setp(autotexts, size=9, weight="bold", color="white")
-    
     ax.set_title('Walking Ability After 120 Days\n(Excluding Not Recorded)', fontsize=13, fontweight='bold', pad=20)
     
-    ax.axis('equal')  
+    ax.axis('equal')
+    
+    # Add legend on the right
+    ax.legend(
+        wedges,
+        display_labels,
+        title="Walking Ability",
+        loc="center left",
+        bbox_to_anchor=(1, 0.5),
+        fontsize=10
+    )  
 
     plt.tight_layout()
     buf = BytesIO()
