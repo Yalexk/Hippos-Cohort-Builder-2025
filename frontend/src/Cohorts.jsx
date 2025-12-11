@@ -5,6 +5,7 @@ import axios from "axios"
 function Cohorts() {
   const [savedCohorts, setSavedCohorts] = useState([])
   const [loading, setLoading] = useState(true)
+  const [selectedAnalysis, setSelectedAnalysis] = useState(null) // {id, name, img}
 
   useEffect(() => {
     loadSavedCohorts()
@@ -40,10 +41,12 @@ function Cohorts() {
     try {
       const response = await axios.post(`http://localhost:5050/api/cohorts/${cohortId}/analyse`)
       console.log('Analysis results:', response.data)
-      
-      // TODO: Navigate to analysis page or display results
-      // For now, just log and alert
-      alert(`Analysis complete for "${cohortName}"!\n\nPatients: ${response.data.total_patients}\n30-day mortality: ${response.data.mortality['30_day']?.rate?.toFixed(1)}%\n\nCheck console for full results.`)
+      // Show only the selected cohort's image in the right sidebar
+      if (response.data.mortality_chart) {
+        setSelectedAnalysis({ id: cohortId, name: cohortName, img: response.data.mortality_chart })
+      } else {
+        setSelectedAnalysis(null)
+      }
       
     } catch (err) {
       console.error('Error analysing cohort:', err)
@@ -93,56 +96,63 @@ function Cohorts() {
         <a href="/" className="back-link">← Back to Builder</a>
       </div>
 
-      {savedCohorts.length === 0 ? (
-        <div className="empty-state">
-          <p>No saved cohorts yet</p>
-          <a href="/" className="build-link">Build your first cohort</a>
-        </div>
-      ) : (
-        <div className="cohorts-grid">
-          {savedCohorts.map((cohort) => (
-            <div key={cohort.id} className="cohort-card">
-              <div className="cohort-card-header">
-                <h3>{cohort.name}</h3>
-                <button 
-                  className="delete-btn-card"
-                  onClick={() => deleteCohort(cohort.id, cohort.name)}
-                  title="Delete cohort"
-                >
-                  ×
-                </button>
+      <div className="cohorts-content">
+        <aside className="cohorts-sidebar">
+          <div className="cohorts-list">
+            {savedCohorts.length === 0 ? (
+              <div className="empty-state-sidebar">
+                <p>No saved cohorts yet</p>
+                <a href="/" className="build-link-small">Build cohort</a>
               </div>
-              
-              <div className="cohort-stats">
-                <div className="stat-item">
-                  <span className="stat-label">Patients</span>
-                  <span className="stat-value">{cohort.count}</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-label">Filters Applied</span>
-                  <span className="stat-value">{getActiveFiltersCount(cohort.filters)}</span>
-                </div>
-              </div>
-
-              <div className="cohort-meta">
-                <span className="cohort-date">
-                  Created: {formatDate(cohort.created_at)}
-                </span>
-              </div>
-
-              <div className="cohort-actions">
-                <button className="btn-secondary">View Details</button>
-                <button 
-                  className="btn-primary"
+            ) : (
+              savedCohorts.map((cohort) => (
+                <div 
+                  key={cohort.id} 
+                  className={`cohort-list-item ${selectedAnalysis?.id === cohort.id ? 'active' : ''}`}
                   onClick={() => analyseCohort(cohort.id, cohort.name)}
                 >
-                  Analyse
-                </button>
+                  <div className="cohort-list-name">{cohort.name}</div>
+                  <button 
+                    className="delete-btn-small"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      deleteCohort(cohort.id, cohort.name)
+                    }}
+                    title="Delete cohort"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+        </aside>
+        <div className="analysis-panel">
+          <div className="analysis-panel-header">Analysis</div>
+          {!selectedAnalysis ? (
+            <div className="analysis-empty">Select a cohort to analyse</div>
+          ) : (
+            <div className="analysis-content">
+              <div className="analysis-meta">
+                <h3>{selectedAnalysis.name}</h3>
+                <div className="analysis-stats">
+                  <div className="stat-chip">
+                    <span className="stat-label">Patients:</span>
+                    <span className="stat-value">{savedCohorts.find(c => c.id === selectedAnalysis.id)?.count || 0}</span>
+                  </div>
+                  <div className="stat-chip">
+                    <span className="stat-label">Filters Applied:</span>
+                    <span className="stat-value">{getActiveFiltersCount(savedCohorts.find(c => c.id === selectedAnalysis.id)?.filters || {})}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="analysis-chart">
+                <img src={selectedAnalysis.img} alt={`Analysis for ${selectedAnalysis.name}`} />
               </div>
             </div>
-          ))}
+          )}
         </div>
-      )}
+      </div>
     </div>
   )
 }
