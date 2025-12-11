@@ -4,6 +4,7 @@ import pandas as pd
 import os
 import json
 from datetime import datetime
+from cohort_analysis import analyse_cohort
 
 app = Flask(__name__)
 CORS(app, origins=["http://localhost:5173"])
@@ -187,6 +188,36 @@ def delete_cohort(cohort_id):
     
     except Exception as e:
         print(f"Error deleting cohort: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/cohorts/<cohort_id>/analyse", methods=['POST'])
+def analyse_cohort_endpoint(cohort_id):
+    """Analyse a saved cohort"""
+    try:
+        if cohort_id not in saved_cohorts:
+            return jsonify({"error": "Cohort not found"}), 404
+        
+        cohort = saved_cohorts[cohort_id]
+        csv_path = cohort.get('csv_path')
+        
+        if not csv_path or not os.path.exists(csv_path):
+            return jsonify({"error": "Cohort data file not found"}), 404
+        
+        # Run analysis
+        analysis_results = analyse_cohort(cohort_id, csv_path)
+        
+        # Add cohort metadata
+        analysis_results['cohort_name'] = cohort['name']
+        analysis_results['created_at'] = cohort['created_at']
+        
+        print(f"Analysed cohort: {cohort['name']}")
+        
+        return jsonify(analysis_results)
+    
+    except Exception as e:
+        print(f"Error analysing cohort: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":

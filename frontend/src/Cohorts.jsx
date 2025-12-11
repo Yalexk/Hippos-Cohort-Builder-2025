@@ -36,6 +36,21 @@ function Cohorts() {
     }
   }
 
+  const analyseCohort = async (cohortId, cohortName) => {
+    try {
+      const response = await axios.post(`http://localhost:5050/api/cohorts/${cohortId}/analyse`)
+      console.log('Analysis results:', response.data)
+      
+      // TODO: Navigate to analysis page or display results
+      // For now, just log and alert
+      alert(`Analysis complete for "${cohortName}"!\n\nPatients: ${response.data.total_patients}\n30-day mortality: ${response.data.mortality['30_day']?.rate?.toFixed(1)}%\n\nCheck console for full results.`)
+      
+    } catch (err) {
+      console.error('Error analysing cohort:', err)
+      alert('Failed to analyse cohort')
+    }
+  }
+
   const formatDate = (isoString) => {
     const date = new Date(isoString)
     return date.toLocaleDateString('en-AU', { 
@@ -117,7 +132,12 @@ function Cohorts() {
 
               <div className="cohort-actions">
                 <button className="btn-secondary">View Details</button>
-                <button className="btn-primary">Analyze</button>
+                <button 
+                  className="btn-primary"
+                  onClick={() => analyseCohort(cohort.id, cohort.name)}
+                >
+                  Analyse
+                </button>
               </div>
             </div>
           ))}
