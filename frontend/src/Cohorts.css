@@ -1,4 +1,4 @@
-.cohorts-page {
+/* .cohorts-page {
   max-width: 1200px;
   margin: 0 auto;
   padding: 1.5rem;
@@ -287,5 +287,350 @@
 
   .cohorts-sidebar {
     max-height: 200px;
+  }
+} */
+
+.cohorts-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  min-height: 100vh;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.cohorts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #d0d0d0;
+  flex-shrink: 0;
+}
+
+.cohorts-header h1 {
+  margin: 0;
+  color: #2c2c2c;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.back-link {
+  color: #4a4a4a;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border: 1px solid #d0d0d0;
+  border-radius: 3px;
+  transition: all 0.2s;
+}
+
+.back-link:hover {
+  background-color: #4a4a4a;
+  color: white;
+}
+
+.loading-message {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.cohorts-content {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 1.5rem;
+  flex: 1;
+  overflow: hidden;
+}
+
+.cohorts-sidebar {
+  background: #fff;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.cohorts-list {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 0.5rem;
+  gap: 0.5rem;
+}
+
+.cohorts-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cohorts-list::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 3px;
+}
+
+.cohorts-list::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
+  border-radius: 3px;
+}
+
+.cohorts-list::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+.cohort-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cohort-list-item:hover {
+  background: #f0f0f0;
+  border-color: #999;
+}
+
+.cohort-list-item.active {
+  background: #4a4a4a;
+  border-color: #4a4a4a;
+}
+
+.cohort-list-item.active .cohort-list-name {
+  color: #fff;
+  font-weight: 600;
+}
+
+.cohort-list-name {
+  flex: 1;
+  font-size: 0.8rem;
+  color: #2c2c2c;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-right: 0.5rem;
+}
+
+.delete-btn-small {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.delete-btn-small:hover {
+  background-color: #d32f2f;
+  color: white;
+}
+
+.cohort-list-item.active .delete-btn-small {
+  color: #fff;
+}
+
+.cohort-list-item.active .delete-btn-small:hover {
+  background-color: #b71c1c;
+}
+
+.empty-state-sidebar {
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.empty-state-sidebar p {
+  color: #999;
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.build-link-small {
+  display: inline-block;
+  background-color: #4a4a4a;
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: background-color 0.2s;
+}
+
+.build-link-small:hover {
+  background-color: #333;
+}
+
+.analysis-panel {
+  background: #fff;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.analysis-panel-header {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2c2c2c;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.analysis-empty {
+  color: #999;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 3rem;
+}
+
+.analysis-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.analysis-meta h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+  color: #2c2c2c;
+  font-weight: 600;
+}
+
+.analysis-stats {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.stat-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 3px;
+}
+
+.stat-chip .stat-label {
+  font-size: 0.75rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.stat-chip .stat-value {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #2c2c2c;
+}
+
+/* NEW STYLES FOR CHART DROPDOWN */
+.chart-controls {
+  margin-bottom: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.chart-controls label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #4a4a4a;
+  white-space: nowrap;
+}
+
+.chart-select {
+  flex: 1;
+  max-width: 400px;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  border: 1px solid #d0d0d0;
+  border-radius: 3px;
+  background-color: white;
+  color: #2c2c2c;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.chart-select:focus {
+  outline: none;
+  border-color: #646cff;
+}
+
+.charts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.analysis-chart {
+  width: 100%;
+}
+
+.analysis-chart img {
+  width: 100%;
+  max-height: 500px;
+  object-fit: contain;
+  border: 1px solid #f0f0f0;
+  border-radius: 3px;
+}
+
+@media (max-width: 768px) {
+  .cohorts-page {
+    padding: 1rem;
+  }
+
+  .cohorts-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .cohorts-content {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .cohorts-sidebar {
+    max-height: 200px;
+  }
+  
+  .chart-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .chart-select {
+    width: 100%;
+    max-width: none;
   }
 }
