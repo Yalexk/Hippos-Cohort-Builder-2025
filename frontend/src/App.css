@@ -1,42 +1,315 @@
-#root {
-  max-width: 1280px;
+.app {
+  max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
+}
+
+h1 {
+  margin-bottom: 2rem;
+  color: #646cff;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.cohort-builder {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.filters-section, .results-section {
+  background-color: #1a1a1a;
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid #333;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #fff;
+  font-size: 1.5rem;
 }
 
-.card {
-  padding: 2em;
+.section-header {
+  color: #646cff;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin: 2rem 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #646cff;
 }
 
-.read-the-docs {
+.section-header:first-of-type {
+  margin-top: 0;
+}
+
+.filter-group {
+  margin-bottom: 1.5rem;
+}
+
+.filter-group label {
+  display: block;
+  margin-bottom: 0.5rem;
   color: #888;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.age-inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.age-inputs span {
+  color: #888;
+}
+
+input[type="number"],
+select {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #242424;
+  border: 1px solid #333;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 1rem;
+  transition: border-color 0.25s;
+}
+
+.age-inputs input {
+  width: auto;
+  flex: 1;
+}
+
+input[type="number"]:focus,
+select:focus {
+  outline: none;
+  border-color: #646cff;
+}
+
+.build-btn {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: #646cff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.25s;
+}
+
+.build-btn:hover:not(:disabled) {
+  background-color: #535bf2;
+}
+
+.build-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.error {
+  padding: 1rem;
+  background-color: rgba(255, 107, 107, 0.1);
+  border: 1px solid #ff6b6b;
+  border-radius: 4px;
+  color: #ff6b6b;
+}
+
+.error p {
+  margin: 0.5rem 0;
+}
+
+.cohort-result {
+  text-align: center;
+}
+
+.cohort-count {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.count-number {
+  display: block;
+  font-size: 4rem;
+  font-weight: 700;
+  color: #646cff;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.count-label {
+  display: block;
+  color: #888;
+  font-size: 1.1rem;
+}
+
+.save-cohort-btn {
+  background-color: #646cff;
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.save-cohort-btn:hover {
+  background-color: #535bf2;
+}
+
+.save-dialog {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background-color: #242424;
+  border-radius: 8px;
+  border: 1px solid #646cff;
+}
+
+.save-dialog input {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #444;
+  border-radius: 4px;
+  background-color: #1a1a1a;
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.save-dialog input::placeholder {
+  color: #666;
+}
+
+.save-dialog input:focus {
+  outline: none;
+  border-color: #646cff;
+}
+
+.dialog-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.dialog-buttons button {
+  padding: 0.5rem 1.5rem;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.dialog-buttons button:first-child {
+  background-color: #646cff;
+  color: white;
+}
+
+.dialog-buttons button:first-child:hover {
+  background-color: #535bf2;
+}
+
+.dialog-buttons button:last-child {
+  background-color: #333;
+  color: white;
+}
+
+.dialog-buttons button:last-child:hover {
+  background-color: #444;
+}
+
+.saved-cohorts-section {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 2px solid #333;
+}
+
+.saved-cohorts-section h3 {
+  color: #fff;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.no-cohorts {
+  color: #666;
+  text-align: center;
+  padding: 2rem;
+  font-style: italic;
+}
+
+.cohorts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cohort-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #242424;
+  border-radius: 6px;
+  border: 1px solid #333;
+  transition: border-color 0.2s;
+}
+
+.cohort-item:hover {
+  border-color: #646cff;
+}
+
+.cohort-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cohort-name {
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.cohort-count-small {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.delete-btn {
+  background-color: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.9rem;
+}
+
+.delete-btn:hover {
+  background-color: #ff5252;
+}
+
+.placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  color: #666;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .cohort-builder {
+    grid-template-columns: 1fr;
+  }
 }
