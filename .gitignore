@@ -1,0 +1,27 @@
+# Data files - DO NOT COMMIT
+*.csv
+backup_original.csv
+cleaned_anzhfr_full.csv
+unsw_datathon_2025.csv
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node
+node_modules/
