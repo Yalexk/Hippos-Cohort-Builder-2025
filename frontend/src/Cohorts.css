@@ -1,0 +1,263 @@
+.cohorts-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+  height: 100vh;
+  background-color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.cohorts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #d0d0d0;
+  flex-shrink: 0;
+}
+
+.cohorts-header h1 {
+  margin: 0;
+  color: #2c2c2c;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.back-link {
+  color: #4a4a4a;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border: 1px solid #d0d0d0;
+  border-radius: 3px;
+  transition: all 0.2s;
+}
+
+.back-link:hover {
+  background-color: #4a4a4a;
+  color: white;
+}
+
+.loading-message {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background-color: #ffffff;
+  border-radius: 4px;
+  border: 1px solid #d0d0d0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-state p {
+  color: #999;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.build-link {
+  display: inline-block;
+  background-color: #4a4a4a;
+  color: white;
+  text-decoration: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 3px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: background-color 0.2s;
+}
+
+.build-link:hover {
+  background-color: #333;
+}
+
+.cohorts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  flex: 1;
+}
+
+.cohorts-grid::-webkit-scrollbar {
+  width: 8px;
+}
+
+.cohorts-grid::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 4px;
+}
+
+.cohorts-grid::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
+  border-radius: 4px;
+}
+
+.cohorts-grid::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+.cohort-card {
+  background-color: #ffffff;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  padding: 1.5rem;
+  transition: all 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.cohort-card:hover {
+  border-color: #999;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.cohort-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.cohort-card-header h3 {
+  margin: 0;
+  color: #2c2c2c;
+  font-size: 1rem;
+  font-weight: 600;
+  flex: 1;
+  padding-right: 1rem;
+}
+
+.delete-btn-card {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  transition: all 0.2s;
+}
+
+.delete-btn-card:hover {
+  background-color: #d32f2f;
+  color: white;
+}
+
+.cohort-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2c2c2c;
+}
+
+.cohort-meta {
+  margin-bottom: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.cohort-date {
+  font-size: 0.7rem;
+  color: #999;
+}
+
+.cohort-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.btn-primary,
+.btn-secondary {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background-color: #4a4a4a;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #333;
+}
+
+.btn-secondary {
+  background-color: #f0f0f0;
+  color: #666;
+  border: 1px solid #d0d0d0;
+}
+
+.btn-secondary:hover {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+@media (max-width: 768px) {
+  .cohorts-page {
+    padding: 1rem;
+  }
+
+  .cohorts-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .cohorts-grid {
+    grid-template-columns: 1fr;
+  }
+}

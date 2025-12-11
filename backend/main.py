@@ -11,8 +11,13 @@ CORS(app, origins=["http://localhost:5173"])
 # Load the cleaned data
 DATA_PATH = "data/cleaned_anzhfr_full.csv"
 COHORTS_FILE = "data/saved_cohorts.json"
+COHORTS_DATA_DIR = "data/cohorts"
 df = None
 saved_cohorts = {}
+
+# Create cohorts directory if it doesn't exist
+if not os.path.exists(COHORTS_DATA_DIR):
+    os.makedirs(COHORTS_DATA_DIR)
 
 def load_data():
     global df
@@ -69,8 +74,9 @@ def build_cohort():
         ]
         
         for filter_key in categorical_filters:
-            if filters.get(filter_key) and filters[filter_key] != '' and filter_key in filtered_df.columns:
-                filtered_df = filtered_df[filtered_df[filter_key] == filters[filter_key]]
+            filter_values = filters.get(filter_key)
+            if filter_values and len(filter_values) > 0 and filter_key in filtered_df.columns:
+                filtered_df = filtered_df[filtered_df[filter_key].isin(filter_values)]
         
         count = len(filtered_df)
         print(f"Cohort size: {count}")
@@ -106,11 +112,45 @@ def save_cohort():
         # Generate unique ID
         cohort_id = f"cohort_{len(saved_cohorts) + 1}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
         
+        # Re-apply filters to get the actual filtered data
+        filtered_df = df.copy()
+        
+        # Apply age filters
+        if filters.get('minAge') and filters['minAge'] != '':
+            min_age = float(filters['minAge'])
+            filtered_df = filtered_df[filtered_df['age'] >= min_age]
+        
+        if filters.get('maxAge') and filters['maxAge'] != '':
+            max_age = float(filters['maxAge'])
+            filtered_df = filtered_df[filtered_df['age'] <= max_age]
+        
+        # Apply categorical filters
+        categorical_filters = [
+            'sex', 'ptype', 'uresidence', 'walk', 'cogstat', 'frailty', 
+            'addelassess', 'ftype', 'afracture', 'asa', 'e_dadmit', 
+            'painassess', 'painmanage', 'analges', 'surg', 'delay', 
+            'anaesth', 'wbear', 'ward', 'gerimed', 'delassess', 'fassess',
+            'pulcers', 'mobil', 'bonemed', 'dbonemed1', 'malnutrition', 
+            'ons', 'wdest', 'fwalk2', 'dresidence', 'fbonemed2', 'fop2'
+        ]
+        
+        for filter_key in categorical_filters:
+            filter_values = filters.get(filter_key)
+            if filter_values and len(filter_values) > 0 and filter_key in filtered_df.columns:
+                filtered_df = filtered_df[filtered_df[filter_key].isin(filter_values)]
+        
+        # Save the filtered data to CSV
+        csv_path = os.path.join(COHORTS_DATA_DIR, f"{cohort_id}.csv")
+        filtered_df.to_csv(csv_path, index=False)
+        print(f"Saved cohort data to: {csv_path} ({len(filtered_df)} rows)")
+        
+        # Save metadata
         saved_cohorts[cohort_id] = {
             "id": cohort_id,
             "name": cohort_name,
             "filters": filters,
             "count": count,
+            "csv_path": csv_path,
             "created_at": datetime.now().isoformat()
         }
         
@@ -121,6 +161,8 @@ def save_cohort():
     
     except Exception as e:
         print(f"Error saving cohort: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
 @app.route("/api/cohorts/<cohort_id>", methods=['DELETE'])
@@ -129,6 +171,13 @@ def delete_cohort(cohort_id):
     try:
         if cohort_id in saved_cohorts:
             cohort_name = saved_cohorts[cohort_id]['name']
+            
+            # Delete the CSV file if it exists
+            csv_path = saved_cohorts[cohort_id].get('csv_path')
+            if csv_path and os.path.exists(csv_path):
+                os.remove(csv_path)
+                print(f"Deleted CSV file: {csv_path}")
+            
             del saved_cohorts[cohort_id]
             save_cohorts()
             print(f"Deleted cohort: {cohort_name}")
