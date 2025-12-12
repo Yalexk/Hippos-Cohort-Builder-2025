@@ -11,7 +11,8 @@ const CHART_OPTIONS = [
   { id: 'residence', label: 'Pre-Admission Residence Status' },
   { id: 'transition', label: 'Residence Transitions: Admissions to Discharge' },
   { id: 'timelines', label: 'Average Length of Stay' },
-  { id: 'surgery', label: 'Time to Surgery Distribution' } // Added
+  { id: 'surgery', label: 'Time to Surgery Distribution' },
+  { id: 'age', label: 'Patient Age Distribution' } // Added
 ]
 
 function Cohorts() {
@@ -57,7 +58,7 @@ function Cohorts() {
       
       setActiveChart('all')
 
-      // Store all analysis charts in state - ADDED timeToSurgeryImg
+      // Store all analysis charts in state - ADDED ageImg
       setSelectedAnalysis({ 
         id: cohortId, 
         name: cohortName, 
@@ -67,7 +68,8 @@ function Cohorts() {
         residenceImg: response.data.residence_chart,
         residenceTransitionImg: response.data.residence_transition_chart,
         timelinesImg: response.data.timelines_chart,
-        timeToSurgeryImg: response.data.time_to_surgery_chart // New field
+        timeToSurgeryImg: response.data.time_to_surgery_chart,
+        ageImg: response.data.age_chart // New field
       })
       
     } catch (err) {
@@ -221,10 +223,17 @@ function Cohorts() {
                   </div>
                 )}
 
-                {/* 7. Time to Surgery Chart (NEW) */}
+                {/* 7. Time to Surgery Chart */}
                 {shouldShow('surgery') && selectedAnalysis.timeToSurgeryImg && (
                   <div className="analysis-chart">
                     <img src={selectedAnalysis.timeToSurgeryImg} alt={`Time to Surgery Distribution for ${selectedAnalysis.name}`} />
+                  </div>
+                )}
+
+                {/* 8. Age Chart (NEW) */}
+                {shouldShow('age') && selectedAnalysis.ageImg && (
+                  <div className="analysis-chart">
+                    <img src={selectedAnalysis.ageImg} alt={`Age Distribution for ${selectedAnalysis.name}`} />
                   </div>
                 )}
               </div>

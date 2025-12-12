@@ -4,9 +4,10 @@ from residence_analysis import compute_residence, generate_residence_chart
 from residence_transition_analysis import compute_residence_transition, generate_residence_transition_chart
 from fwalk2_analysis import compute_fwalk2, generate_fwalk2_chart
 from afracture_analysis import compute_afracture, generate_afracture_chart
-# IMPORT NEW MODULES
 from timelines_analysis import compute_timelines, generate_timelines_chart
 from time_to_surgery_analysis import compute_time_to_surgery, generate_time_to_surgery_chart
+# IMPORT NEW MODULE
+from age_analysis import compute_age, generate_age_chart
 
 # EXPANDABLE CONFIGURATION
 CHART_BLOCKING_RULES = {
@@ -15,6 +16,7 @@ CHART_BLOCKING_RULES = {
     'afracture_chart': ['afracture'],
     'timelines_chart': [],
     'time_to_surgery_chart': [],
+    'age_chart': [],
 }
 
 def should_generate_chart(chart_key, applied_filters):
@@ -75,7 +77,7 @@ def analyse_cohort(cohort_id, cohort_csv_path, filters=None):
         else:
             results['residence_transition_chart'] = None
 
-        # 6. Length of Stay Analysis (Modified)
+        # 6. Length of Stay Analysis
         timelines_stats = compute_timelines(df)
         results['timelines'] = timelines_stats
         if should_generate_chart('timelines_chart', filters):
@@ -83,13 +85,21 @@ def analyse_cohort(cohort_id, cohort_csv_path, filters=None):
         else:
             results['timelines_chart'] = None
 
-        # 7. Time to Surgery Analysis (NEW)
+        # 7. Time to Surgery Analysis
         surgery_stats = compute_time_to_surgery(df)
         results['time_to_surgery'] = surgery_stats
         if should_generate_chart('time_to_surgery_chart', filters):
             results['time_to_surgery_chart'] = generate_time_to_surgery_chart(surgery_stats)
         else:
             results['time_to_surgery_chart'] = None
+
+        # 8. Age Analysis (NEW)
+        age_stats = compute_age(df)
+        results['age'] = age_stats
+        if should_generate_chart('age_chart', filters):
+            results['age_chart'] = generate_age_chart(age_stats)
+        else:
+            results['age_chart'] = None
 
         if 'total_patients' in mortality_stats:
             results['total_patients'] = mortality_stats['total_patients']
