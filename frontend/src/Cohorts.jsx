@@ -55,6 +55,7 @@ function Cohorts() {
     try {
       const response = await axios.post(`http://localhost:5050/api/cohorts/${cohortId}/analyse`)
       console.log('Analysis results:', response.data)
+      console.log('Enhanced metrics:', response.data.enhanced_metrics)
       
       setActiveChart('all')
 
@@ -69,7 +70,8 @@ function Cohorts() {
         residenceTransitionImg: response.data.residence_transition_chart,
         timelinesImg: response.data.timelines_chart,
         timeToSurgeryImg: response.data.time_to_surgery_chart,
-        ageImg: response.data.age_chart // New field
+        ageImg: response.data.age_chart,
+        enhancedMetrics: response.data.enhanced_metrics || {}
       })
       
     } catch (err) {
@@ -144,7 +146,9 @@ function Cohorts() {
           </div>
         </aside>
         <div className="analysis-panel">
-          <div className="analysis-panel-header">Cohort Outcomes and Information Dashboard</div>
+          <div className="analysis-panel-header">
+            Cohort Outcomes and Information Dashboard
+          </div>
           {!selectedAnalysis ? (
             <div className="analysis-empty">Select a cohort to analyse</div>
           ) : (
@@ -161,8 +165,63 @@ function Cohorts() {
                     <span className="stat-label">Filters Applied:</span>
                     <span className="stat-value">{getActiveFiltersCount(savedCohorts.find(c => c.id === selectedAnalysis.id)?.filters || {})}</span>
                   </div>
+                  {selectedAnalysis.enhancedMetrics?.gender_distribution && (
+                    <div className="stat-chip">
+                      <span className="stat-label">M:F Gender:</span>
+                      <span className="stat-value">{selectedAnalysis.enhancedMetrics.gender_distribution.male_percent}:{selectedAnalysis.enhancedMetrics.gender_distribution.female_percent}</span>
+                    </div>
+                  )}
+                  {selectedAnalysis.enhancedMetrics?.n_hospitals !== undefined && selectedAnalysis.enhancedMetrics.n_hospitals > 0 && (
+                    <div className="stat-chip">
+                      <span className="stat-label">Hospitals:</span>
+                      <span className="stat-value">{selectedAnalysis.enhancedMetrics.n_hospitals}</span>
+                    </div>
+                  )}
+                  {selectedAnalysis.enhancedMetrics?.date_range && selectedAnalysis.enhancedMetrics.date_range !== 'Unknown' && (
+                    <div className="stat-chip">
+                      <span className="stat-label">Date Range:</span>
+                      <span className="stat-value">{selectedAnalysis.enhancedMetrics.date_range}</span>
+                    </div>
+                  )}
+                  {selectedAnalysis.enhancedMetrics?.imputation_rate !== undefined && selectedAnalysis.enhancedMetrics.imputation_rate > 0 && (
+                    <div className={`stat-chip ${selectedAnalysis.enhancedMetrics.imputation_rate > 20 ? 'stat-chip-warning' : ''}`}>
+                      <span className="stat-label">Imputed Data:</span>
+                      <span className="stat-value">
+                        {selectedAnalysis.enhancedMetrics.patients_with_imputation} patients ({selectedAnalysis.enhancedMetrics.imputation_rate}%)
+                        {selectedAnalysis.enhancedMetrics.avg_imputed_fields > 0 && (
+                          <span style={{fontSize: '0.85em', color: '#666'}}> • avg {selectedAnalysis.enhancedMetrics.avg_imputed_fields} fields</span>
+                        )}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
+                {/* Imputation Breakdown Details */}
+                {selectedAnalysis.enhancedMetrics?.imputation_by_field && Object.keys(selectedAnalysis.enhancedMetrics.imputation_by_field).length > 0 && (
+                  <div className="imputation-breakdown">
+                    <h4>Imputation Breakdown by Field</h4>
+                    <table className="breakdown-table">
+                      <thead>
+                        <tr>
+                          <th>Field</th>
+                          <th>Imputed Patients</th>
+                          <th>Rate</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {Object.entries(selectedAnalysis.enhancedMetrics.imputation_by_field).map(([field, data]) => (
+                          <tr key={field}>
+                            <td>{field.replace(/_/g, ' ')}</td>
+                            <td>{data.count}</td>
+                            <td className={data.percent > 20 ? 'high-imputation' : ''}>{data.percent}%</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {/* New Dropdown Toolbar */}
                 <div className="chart-controls">
                   <label htmlFor="chart-selector">Select Diagram:</label>
                   <select 

@@ -103,10 +103,14 @@ function App() {
   }
 
   const toggleFilterExpansion = (filterId) => {
-    setExpandedFilters(prev => ({
-      ...prev,
-      [filterId]: !prev[filterId]
-    }))
+    setExpandedFilters(prev => {
+      // If clicking on already expanded filter, close it
+      if (prev[filterId]) {
+        return {}
+      }
+      // Otherwise, close all and open only this one
+      return { [filterId]: true }
+    })
   }
 
   const CollapsibleFilter = ({ id, label, options, field, displayMap = {} }) => (

@@ -28,6 +28,124 @@ def should_generate_chart(chart_key, applied_filters):
             return False
     return True
 
+def compute_enhanced_metrics(df, mortality_stats):
+    """
+    Compute enhanced metrics for research adequacy assessment.
+    Returns metrics including:
+    - Number of hospitals
+    - Date range
+    """
+    import numpy as np
+    from datetime import datetime
+    
+    metrics = {}
+    
+    # Number of Hospitals
+    if 'ahos_code' in df.columns:
+        unique_hospitals = df['ahos_code'].dropna().nunique()
+        metrics['n_hospitals'] = int(unique_hospitals)
+    else:
+        metrics['n_hospitals'] = 0
+    
+    # Date Range
+    # Try to find admission date column
+    date_col = None
+    for col in ['arrdatetime_dt', 'admdatetimeop_dt', 'tarrdatetime_dt']:
+        if col in df.columns:
+            date_col = col
+            break
+    
+    if date_col:
+        # Convert to datetime if not already
+        dates = pd.to_datetime(df[date_col], errors='coerce').dropna()
+        
+        if len(dates) > 0:
+            earliest = dates.min()
+            latest = dates.max()
+            
+            metrics['earliest_admission'] = earliest.strftime('%Y-%m-%d')
+            metrics['latest_admission'] = latest.strftime('%Y-%m-%d')
+            
+            # Calculate time span in years
+            time_span_days = (latest - earliest).days
+            time_span_years = round(time_span_days / 365.25, 1)
+            metrics['time_span_years'] = time_span_years
+            
+            metrics['date_range'] = f"{earliest.strftime('%b %Y')} - {latest.strftime('%b %Y')}"
+        else:
+            metrics['earliest_admission'] = 'Unknown'
+            metrics['latest_admission'] = 'Unknown'
+            metrics['time_span_years'] = 0
+            metrics['date_range'] = 'Unknown'
+    else:
+        metrics['earliest_admission'] = 'Unknown'
+        metrics['latest_admission'] = 'Unknown'
+        metrics['time_span_years'] = 0
+        metrics['date_range'] = 'Unknown'
+    
+    # Gender distribution
+    if 'sex' in df.columns:
+        sex_counts = df['sex'].value_counts()
+        total_patients = len(df)
+        
+        # Get counts for each gender
+        male_count = sex_counts.get('Male', 0)
+        female_count = sex_counts.get('Female', 0)
+        other_count = sex_counts.get('Intersex or indeterminate', 0)
+        
+        # Calculate percentages
+        male_pct = round(male_count / total_patients * 100, 1) if total_patients > 0 else 0
+        female_pct = round(female_count / total_patients * 100, 1) if total_patients > 0 else 0
+        
+        metrics['gender_distribution'] = {
+            'male': int(male_count),
+            'female': int(female_count),
+            'other': int(other_count),
+            'male_percent': male_pct,
+            'female_percent': female_pct,
+            'ratio': f"M:{male_pct}% F:{female_pct}%"
+        }
+    
+    # Imputation tracking (row-level and field-level breakdown)
+    if 'n_imputed_fields' in df.columns:
+        # Count patients with ANY imputed value
+        patients_with_imputation = (df['n_imputed_fields'] > 0).sum()
+        total_patients = len(df)
+        
+        metrics['patients_with_imputation'] = int(patients_with_imputation)
+        metrics['imputation_rate'] = round(patients_with_imputation / total_patients * 100, 1) if total_patients > 0 else 0
+        
+        # Average number of imputed fields per patient (among those with imputation)
+        if patients_with_imputation > 0:
+            avg_imputed_fields = df[df['n_imputed_fields'] > 0]['n_imputed_fields'].mean()
+            metrics['avg_imputed_fields'] = round(avg_imputed_fields, 1)
+        else:
+            metrics['avg_imputed_fields'] = 0
+        
+        # Per-field breakdown for core clinical variables
+        # Check if individual imputation flag columns exist
+        core_fields = ['age', 'los_hospital_days', 'time_to_surgery_hrs']
+        imputation_breakdown = {}
+        
+        for field in core_fields:
+            flag_col = f'{field}_was_missing'
+            if flag_col in df.columns:
+                n_imputed = df[flag_col].sum()
+                imputation_breakdown[field] = {
+                    'count': int(n_imputed),
+                    'percent': round(n_imputed / total_patients * 100, 1) if total_patients > 0 else 0
+                }
+        
+        if imputation_breakdown:
+            metrics['imputation_by_field'] = imputation_breakdown
+        
+    else:
+        metrics['patients_with_imputation'] = 0
+        metrics['imputation_rate'] = 0
+        metrics['avg_imputed_fields'] = 0
+    
+    return metrics
+
 def analyse_cohort(cohort_id, cohort_csv_path, filters=None):
     try:
         df = pd.read_csv(cohort_csv_path)
@@ -103,6 +221,9 @@ def analyse_cohort(cohort_id, cohort_csv_path, filters=None):
 
         if 'total_patients' in mortality_stats:
             results['total_patients'] = mortality_stats['total_patients']
+
+        # Add enhanced metrics for research adequacy assessment
+        results['enhanced_metrics'] = compute_enhanced_metrics(df, mortality_stats)
 
         return results
     except Exception as e:
