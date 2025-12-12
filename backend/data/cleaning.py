@@ -413,31 +413,52 @@ def apply_mappings(df):
 def build_datetime_from_parts(df, prefix):
     """
     Given a prefix like 'arrdatetime', tries to build a datetime from:
-      prefix + _year, prefix + _month, prefix + _hms
+      prefix + _year, prefix + _month, prefix + _datediff, prefix + _hms
     Creates column: prefix + '_dt'
-    Uses day=1 (since day unknown), hms may be missing -> '00:00:00'
+    Uses the _datediff to determine the actual day within the month.
     """
     ycol = f"{prefix}_year"
     mcol = f"{prefix}_month"
+    dcol = f"{prefix}_datediff"  # Day offset within month
     hmscol = f"{prefix}_hms"
     outcol = f"{prefix}_dt"
-    # only attempt if at least year and month exist in dataframe
-    if ycol in df.columns and mcol in df.columns:
-        # create safe strings
+    
+    # only attempt if at least year, month, and datediff exist in dataframe
+    if ycol in df.columns and mcol in df.columns and dcol in df.columns:
+        # Build base date from year-month-01
         y = df[ycol].fillna(0).astype(int).astype(str).replace("0", "")
         m = df[mcol].fillna(0).astype(int).astype(str).replace("0", "")
-        # some month/year may be floats or invalid -> coerce later
-        # create hms default
+        
+        # Create base datetime (first of month)
+        base_strings = y + "-" + m + "-01"
+        base_dt = pd.to_datetime(base_strings, errors="coerce", dayfirst=False)
+        
+        # Add the day offset from datediff
+        day_offset = pd.to_timedelta(df[dcol].fillna(0), unit='D', errors='coerce')
+        result_dt = base_dt + day_offset
+        
+        # Handle HMS component if it exists
         if hmscol in df.columns:
             hms = df[hmscol].fillna("00:00:00").astype(str)
-            # clean common formats like "12:00" -> "12:00:00"
+            # Clean common formats like "12:00" -> "12:00:00"
             hms = hms.apply(lambda v: v if ":" in v and v.count(":")==2 else (v + ":00" if ":" in v else "00:00:00"))
-        else:
-            hms = pd.Series(["00:00:00"] * len(df))
-        # build string "YYYY-M-D H:M:S", set day=1
-        dt_strings = y + "-" + m + "-01 " + hms
-        # coerce to datetime
-        df[outcol] = pd.to_datetime(dt_strings, errors="coerce", dayfirst=False)
+            
+            # Extract time components and add to date
+            time_parts = hms.str.split(':', expand=True)
+            time_parts.columns = ['hour', 'minute', 'second']
+            time_parts = time_parts.apply(pd.to_numeric, errors='coerce').fillna(0)
+            
+            time_delta = pd.to_timedelta(
+                time_parts['hour'].astype(int), unit='h'
+            ) + pd.to_timedelta(
+                time_parts['minute'].astype(int), unit='m'
+            ) + pd.to_timedelta(
+                time_parts['second'].astype(int), unit='s'
+            )
+            
+            result_dt = result_dt + time_delta
+        
+        df[outcol] = result_dt
     else:
         # column components not present -> create empty dt col
         df[outcol] = pd.NaT
