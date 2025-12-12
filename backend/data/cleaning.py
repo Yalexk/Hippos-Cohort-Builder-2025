@@ -413,29 +413,28 @@ def apply_mappings(df):
 def build_datetime_from_parts(df, prefix):
     """
     Given a prefix like 'arrdatetime', tries to build a datetime from:
-      prefix + _year, prefix + _month, prefix + _datediff, prefix + _hms
+      prefix + _datediff (days since 2010-01-01) and prefix + _hms (time)
     Creates column: prefix + '_dt'
-    Uses the _datediff to determine the actual day within the month.
+    
+    The _datediff column represents days since 2010-01-01 epoch.
+    The _year and _month columns appear to be approximate/administrative dates
+    and don't accurately represent the actual datetime.
     """
-    ycol = f"{prefix}_year"
-    mcol = f"{prefix}_month"
-    dcol = f"{prefix}_datediff"  # Day offset within month
+    dcol = f"{prefix}_datediff"  # Days since 2010-01-01
     hmscol = f"{prefix}_hms"
     outcol = f"{prefix}_dt"
     
-    # only attempt if at least year, month, and datediff exist in dataframe
-    if ycol in df.columns and mcol in df.columns and dcol in df.columns:
-        # Build base date from year-month-01
-        y = df[ycol].fillna(0).astype(int).astype(str).replace("0", "")
-        m = df[mcol].fillna(0).astype(int).astype(str).replace("0", "")
+    # Only attempt if datediff exists
+    if dcol in df.columns:
+        # Epoch: 2010-01-01
+        epoch = pd.Timestamp('2010-01-01')
         
-        # Create base datetime (first of month)
-        base_strings = y + "-" + m + "-01"
-        base_dt = pd.to_datetime(base_strings, errors="coerce", dayfirst=False)
-        
-        # Add the day offset from datediff
+        # Calculate date from datediff (days since epoch)
         day_offset = pd.to_timedelta(df[dcol].fillna(0), unit='D', errors='coerce')
-        result_dt = base_dt + day_offset
+        result_dt = epoch + day_offset
+        
+        # Set to NaT where datediff was actually missing
+        result_dt[df[dcol].isna()] = pd.NaT
         
         # Handle HMS component if it exists
         if hmscol in df.columns:
