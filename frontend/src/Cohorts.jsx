@@ -163,6 +163,12 @@ function Cohorts() {
                     <span className="stat-label">Filters Applied:</span>
                     <span className="stat-value">{getActiveFiltersCount(savedCohorts.find(c => c.id === selectedAnalysis.id)?.filters || {})}</span>
                   </div>
+                  {selectedAnalysis.enhancedMetrics?.gender_distribution && (
+                    <div className="stat-chip">
+                      <span className="stat-label">M:F Gender:</span>
+                      <span className="stat-value">{selectedAnalysis.enhancedMetrics.gender_distribution.male_percent}:{selectedAnalysis.enhancedMetrics.gender_distribution.female_percent}</span>
+                    </div>
+                  )}
                   {selectedAnalysis.enhancedMetrics?.n_hospitals !== undefined && selectedAnalysis.enhancedMetrics.n_hospitals > 0 && (
                     <div className="stat-chip">
                       <span className="stat-label">Hospitals:</span>

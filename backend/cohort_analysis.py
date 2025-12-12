@@ -84,6 +84,29 @@ def compute_enhanced_metrics(df, mortality_stats):
         metrics['time_span_years'] = 0
         metrics['date_range'] = 'Unknown'
     
+    # Gender distribution
+    if 'sex' in df.columns:
+        sex_counts = df['sex'].value_counts()
+        total_patients = len(df)
+        
+        # Get counts for each gender
+        male_count = sex_counts.get('Male', 0)
+        female_count = sex_counts.get('Female', 0)
+        other_count = sex_counts.get('Intersex or indeterminate', 0)
+        
+        # Calculate percentages
+        male_pct = round(male_count / total_patients * 100, 1) if total_patients > 0 else 0
+        female_pct = round(female_count / total_patients * 100, 1) if total_patients > 0 else 0
+        
+        metrics['gender_distribution'] = {
+            'male': int(male_count),
+            'female': int(female_count),
+            'other': int(other_count),
+            'male_percent': male_pct,
+            'female_percent': female_pct,
+            'ratio': f"M:{male_pct}% F:{female_pct}%"
+        }
+    
     # Imputation tracking (row-level and field-level breakdown)
     if 'n_imputed_fields' in df.columns:
         # Count patients with ANY imputed value
