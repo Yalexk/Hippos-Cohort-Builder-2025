@@ -134,5 +134,51 @@
     "count": 97429,
     "csv_path": "data/cohorts\\cohort_3_20251212103816.csv",
     "created_at": "2025-12-12T10:38:25.407859"
+  },
+  "cohort_4_20251212111126": {
+    "id": "cohort_4_20251212111126",
+    "name": "to private residence",
+    "filters": {
+      "minAge": "",
+      "maxAge": "",
+      "sex": [],
+      "ptype": [],
+      "uresidence": [],
+      "walk": [],
+      "cogstat": [],
+      "frailty": [],
+      "addelassess": [],
+      "ftype": [],
+      "afracture": [],
+      "asa": [],
+      "e_dadmit": [],
+      "painassess": [],
+      "painmanage": [],
+      "analges": [],
+      "surg": [],
+      "delay": [],
+      "anaesth": [],
+      "wbear": [],
+      "ward": [],
+      "gerimed": [],
+      "delassess": [],
+      "fassess": [],
+      "pulcers": [],
+      "mobil": [],
+      "bonemed": [],
+      "dbonemed1": [],
+      "malnutrition": [],
+      "ons": [],
+      "wdest": [
+        "Private residence"
+      ],
+      "fwalk2": [],
+      "dresidence": [],
+      "fbonemed2": [],
+      "fop2": []
+    },
+    "count": 14357,
+    "csv_path": "data/cohorts\\cohort_4_20251212111126.csv",
+    "created_at": "2025-12-12T11:11:27.820280"
   }
 }
