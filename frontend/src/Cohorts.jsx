@@ -53,6 +53,7 @@ function Cohorts() {
     try {
       const response = await axios.post(`http://localhost:5050/api/cohorts/${cohortId}/analyse`)
       console.log('Analysis results:', response.data)
+      console.log('Enhanced metrics:', response.data.enhanced_metrics)
       
       // Reset view to 'all' when a new cohort is selected
       setActiveChart('all')
@@ -174,7 +175,43 @@ function Cohorts() {
                       <span className="stat-value">{selectedAnalysis.enhancedMetrics.date_range}</span>
                     </div>
                   )}
+                  {selectedAnalysis.enhancedMetrics?.imputation_rate !== undefined && selectedAnalysis.enhancedMetrics.imputation_rate > 0 && (
+                    <div className={`stat-chip ${selectedAnalysis.enhancedMetrics.imputation_rate > 20 ? 'stat-chip-warning' : ''}`}>
+                      <span className="stat-label">Imputed Data:</span>
+                      <span className="stat-value">
+                        {selectedAnalysis.enhancedMetrics.patients_with_imputation} patients ({selectedAnalysis.enhancedMetrics.imputation_rate}%)
+                        {selectedAnalysis.enhancedMetrics.avg_imputed_fields > 0 && (
+                          <span style={{fontSize: '0.85em', color: '#666'}}> • avg {selectedAnalysis.enhancedMetrics.avg_imputed_fields} fields</span>
+                        )}
+                      </span>
+                    </div>
+                  )}
                 </div>
+
+                {/* Imputation Breakdown Details */}
+                {selectedAnalysis.enhancedMetrics?.imputation_by_field && Object.keys(selectedAnalysis.enhancedMetrics.imputation_by_field).length > 0 && (
+                  <div className="imputation-breakdown">
+                    <h4>Imputation Breakdown by Field</h4>
+                    <table className="breakdown-table">
+                      <thead>
+                        <tr>
+                          <th>Field</th>
+                          <th>Imputed Patients</th>
+                          <th>Rate</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {Object.entries(selectedAnalysis.enhancedMetrics.imputation_by_field).map(([field, data]) => (
+                          <tr key={field}>
+                            <td>{field.replace(/_/g, ' ')}</td>
+                            <td>{data.count}</td>
+                            <td className={data.percent > 20 ? 'high-imputation' : ''}>{data.percent}%</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
 
                 {/* New Dropdown Toolbar */}
                 <div className="chart-controls">

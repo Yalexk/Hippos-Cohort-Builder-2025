@@ -555,6 +555,82 @@
   color: #2c2c2c;
 }
 
+.stat-chip-warning {
+  background: #fff3cd;
+  border-color: #ffc107;
+}
+
+.stat-chip-warning .stat-label {
+  color: #856404;
+}
+
+.stat-chip-warning .stat-value {
+  color: #856404;
+}
+
+/* Imputation Breakdown Table */
+.imputation-breakdown {
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+}
+
+.imputation-breakdown h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+}
+
+.breakdown-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.breakdown-table thead {
+  background-color: #e9ecef;
+}
+
+.breakdown-table th {
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.breakdown-table td {
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #212529;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.breakdown-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.breakdown-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.breakdown-table td:first-child {
+  text-transform: capitalize;
+  font-weight: 500;
+}
+
+.breakdown-table td.high-imputation {
+  color: #856404;
+  font-weight: 600;
+  background-color: #fff3cd;
+}
+
 /* NEW STYLES FOR CHART DROPDOWN */
 .chart-controls {
   margin-bottom: 1rem;
