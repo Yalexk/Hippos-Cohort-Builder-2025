@@ -502,6 +502,7 @@ def knn_impute_continuous(df, n_neighbors=5):
     """
     Use KNN imputation for continuous variables with missing values.
     This provides more sophisticated imputation than simple mean/median filling.
+    Also tracks which rows had imputed values for data quality assessment.
     """
     # Identify continuous variables that may have missing values
     continuous_vars = [
@@ -512,8 +513,17 @@ def knn_impute_continuous(df, n_neighbors=5):
         'transfer_to_operating_days'
     ]
     
+    # Core clinical variables to track for data quality (excludes transfer_to_operating_days)
+    # Transfer is expected to be missing for most patients (not transferred)
+    core_clinical_vars = [
+        'age',
+        'los_hospital_days',
+        'time_to_surgery_hrs'
+    ]
+    
     # Filter to only columns that exist in the dataframe
     continuous_vars = [col for col in continuous_vars if col in df.columns]
+    core_clinical_vars = [col for col in core_clinical_vars if col in df.columns]
     
     if not continuous_vars:
         print("No continuous variables found for KNN imputation.")
@@ -528,8 +538,14 @@ def knn_impute_continuous(df, n_neighbors=5):
     
     print(f"Applying KNN imputation to: {', '.join(cols_with_missing)}")
     print(f"Missing counts before imputation:")
+    
+    # Track which rows had missing values BEFORE imputation
+    imputation_map = {}
     for col in cols_with_missing:
-        print(f"  {col}: {df[col].isna().sum()} missing values")
+        n_missing = df[col].isna().sum()
+        print(f"  {col}: {n_missing} missing values")
+        # Create boolean mask: True where originally NaN
+        imputation_map[col] = df[col].isna().copy()
     
     # Create KNN imputer
     imputer = KNNImputer(n_neighbors=n_neighbors, weights='distance')
@@ -541,6 +557,38 @@ def knn_impute_continuous(df, n_neighbors=5):
     print(f"Missing counts after imputation:")
     for col in cols_with_missing:
         print(f"  {col}: {df[col].isna().sum()} missing values")
+    
+    # Track imputation ONLY for core clinical variables (not transfer-related)
+    # This gives a more meaningful data quality metric
+    core_imputation_map = {col: imputation_map[col] for col in core_clinical_vars if col in imputation_map}
+    
+    if core_imputation_map:
+        # Sum across CORE clinical fields only
+        core_imputation_df = pd.DataFrame(core_imputation_map)
+        df['n_imputed_fields'] = core_imputation_df.sum(axis=1).astype(int)
+        
+        # Summary statistics for core fields
+        patients_with_imputation = (df['n_imputed_fields'] > 0).sum()
+        total_patients = len(df)
+        imputation_rate = round(patients_with_imputation / total_patients * 100, 1)
+        
+        print(f"\nCore Clinical Fields Imputation Summary (age, LOS, time_to_surgery):")
+        print(f"  Patients with imputed values: {patients_with_imputation} ({imputation_rate}%)")
+        print(f"  Core fields tracked: {len(core_imputation_map)}")
+        
+        # Show breakdown by field for core variables
+        for col in core_clinical_vars:
+            if col in imputation_map:
+                n_imputed = imputation_map[col].sum()
+                rate = round(n_imputed / total_patients * 100, 1)
+                print(f"    {col}: {n_imputed} imputed ({rate}%)")
+        
+        # Save individual field flags for detailed per-cohort analysis
+        for col in core_clinical_vars:
+            if col in imputation_map:
+                df[f'{col}_was_missing'] = imputation_map[col].astype(int)
+    else:
+        df['n_imputed_fields'] = 0
     
     return df
 

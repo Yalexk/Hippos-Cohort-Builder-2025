@@ -214,6 +214,7 @@ def analyse_cohort_endpoint(cohort_id):
         analysis_results['created_at'] = cohort['created_at']
         
         print(f"Analysed cohort: {cohort['name']}")
+        print(f"Enhanced metrics in results: {analysis_results.get('enhanced_metrics', 'NOT FOUND')}")
         
         return jsonify(analysis_results)
     

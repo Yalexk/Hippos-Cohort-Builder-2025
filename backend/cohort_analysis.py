@@ -84,6 +84,44 @@ def compute_enhanced_metrics(df, mortality_stats):
         metrics['time_span_years'] = 0
         metrics['date_range'] = 'Unknown'
     
+    # Imputation tracking (row-level and field-level breakdown)
+    if 'n_imputed_fields' in df.columns:
+        # Count patients with ANY imputed value
+        patients_with_imputation = (df['n_imputed_fields'] > 0).sum()
+        total_patients = len(df)
+        
+        metrics['patients_with_imputation'] = int(patients_with_imputation)
+        metrics['imputation_rate'] = round(patients_with_imputation / total_patients * 100, 1) if total_patients > 0 else 0
+        
+        # Average number of imputed fields per patient (among those with imputation)
+        if patients_with_imputation > 0:
+            avg_imputed_fields = df[df['n_imputed_fields'] > 0]['n_imputed_fields'].mean()
+            metrics['avg_imputed_fields'] = round(avg_imputed_fields, 1)
+        else:
+            metrics['avg_imputed_fields'] = 0
+        
+        # Per-field breakdown for core clinical variables
+        # Check if individual imputation flag columns exist
+        core_fields = ['age', 'los_hospital_days', 'time_to_surgery_hrs']
+        imputation_breakdown = {}
+        
+        for field in core_fields:
+            flag_col = f'{field}_was_missing'
+            if flag_col in df.columns:
+                n_imputed = df[flag_col].sum()
+                imputation_breakdown[field] = {
+                    'count': int(n_imputed),
+                    'percent': round(n_imputed / total_patients * 100, 1) if total_patients > 0 else 0
+                }
+        
+        if imputation_breakdown:
+            metrics['imputation_by_field'] = imputation_breakdown
+        
+    else:
+        metrics['patients_with_imputation'] = 0
+        metrics['imputation_rate'] = 0
+        metrics['avg_imputed_fields'] = 0
+    
     return metrics
 
 def analyse_cohort(cohort_id, cohort_csv_path, filters=None):
