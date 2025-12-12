@@ -66,9 +66,10 @@ def generate_residence_chart(stats: dict):
     # Define colors (Safe pastel palette)
     colors = ['#4a90e2', '#50c878', '#e24a4a', '#f5a623']
     
-    wedges, texts = ax.pie(
+    wedges, texts, autotexts = ax.pie(
         sizes, 
         labels=None,
+        autopct='%1.1f%%',
         startangle=90,
         colors=colors[:len(sizes)],
         textprops=dict(color="black")

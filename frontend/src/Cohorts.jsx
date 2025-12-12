@@ -2,21 +2,23 @@ import { useState, useEffect } from 'react'
 import './Cohorts.css'
 import axios from "axios"
 
-// Configuration for charts - easy to expand later
+// Configuration for charts - ADDED NEW CHART
 const CHART_OPTIONS = [
   { id: 'all', label: 'Show All Charts' },
   { id: 'mortality', label: 'Mortality Status Across Time Frames' },
   { id: 'walking', label: 'Walking Ability After 120 Days' },
   { id: 'fracture', label: 'Fracture Classification' },
   { id: 'residence', label: 'Pre-Admission Residence Status' },
-  { id: 'transition', label: 'Residence Transitions: Admissions to Discharge' }
+  { id: 'transition', label: 'Residence Transitions: Admissions to Discharge' },
+  { id: 'timelines', label: 'Average Length of Stay' },
+  { id: 'surgery', label: 'Time to Surgery Distribution' },
+  { id: 'age', label: 'Patient Age Distribution' } // Added
 ]
 
 function Cohorts() {
   const [savedCohorts, setSavedCohorts] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedAnalysis, setSelectedAnalysis] = useState(null)
-  // New state for the dropdown selection
   const [activeChart, setActiveChart] = useState('all') 
 
   useEffect(() => {
@@ -55,10 +57,9 @@ function Cohorts() {
       console.log('Analysis results:', response.data)
       console.log('Enhanced metrics:', response.data.enhanced_metrics)
       
-      // Reset view to 'all' when a new cohort is selected
       setActiveChart('all')
 
-      // Store all analysis charts in state
+      // Store all analysis charts in state - ADDED ageImg
       setSelectedAnalysis({ 
         id: cohortId, 
         name: cohortName, 
@@ -67,6 +68,9 @@ function Cohorts() {
         afractureImg: response.data.afracture_chart,
         residenceImg: response.data.residence_chart,
         residenceTransitionImg: response.data.residence_transition_chart,
+        timelinesImg: response.data.timelines_chart,
+        timeToSurgeryImg: response.data.time_to_surgery_chart,
+        ageImg: response.data.age_chart,
         enhancedMetrics: response.data.enhanced_metrics || {}
       })
       
@@ -79,7 +83,6 @@ function Cohorts() {
   const getActiveFiltersCount = (filters) => {
     let count = 0
     if (filters.minAge || filters.maxAge) count++
-    
     Object.keys(filters).forEach(key => {
       if (key !== 'minAge' && key !== 'maxAge' && filters[key]?.length > 0) {
         count++
@@ -88,7 +91,6 @@ function Cohorts() {
     return count
   }
 
-  // Helper to check if a chart should be displayed
   const shouldShow = (chartId) => {
     return activeChart === 'all' || activeChart === chartId
   }
@@ -270,6 +272,27 @@ function Cohorts() {
                 {shouldShow('transition') && selectedAnalysis.residenceTransitionImg && (
                   <div className="analysis-chart">
                     <img src={selectedAnalysis.residenceTransitionImg} alt={`Residence Transition Analysis for ${selectedAnalysis.name}`} />
+                  </div>
+                )}
+                
+                {/* 6. Length of Stay Chart */}
+                {shouldShow('timelines') && selectedAnalysis.timelinesImg && (
+                  <div className="analysis-chart">
+                    <img src={selectedAnalysis.timelinesImg} alt={`Average Length of Stay for ${selectedAnalysis.name}`} />
+                  </div>
+                )}
+
+                {/* 7. Time to Surgery Chart */}
+                {shouldShow('surgery') && selectedAnalysis.timeToSurgeryImg && (
+                  <div className="analysis-chart">
+                    <img src={selectedAnalysis.timeToSurgeryImg} alt={`Time to Surgery Distribution for ${selectedAnalysis.name}`} />
+                  </div>
+                )}
+
+                {/* 8. Age Chart (NEW) */}
+                {shouldShow('age') && selectedAnalysis.ageImg && (
+                  <div className="analysis-chart">
+                    <img src={selectedAnalysis.ageImg} alt={`Age Distribution for ${selectedAnalysis.name}`} />
                   </div>
                 )}
               </div>
