@@ -1,4 +1,5 @@
 # Hippos Cohort Builder 2025
+Team Members: Alexander Yecies, Kangona Sinha, Revaldi Hansya Widjanarka 
 
 A web-based cohort builder and analytics platform for hip fracture patient data using the ANZHFR dataset. Built with React frontend and Python Flask backend, featuring advanced filtering, cohort management, and mortality analysis visualization.
 
